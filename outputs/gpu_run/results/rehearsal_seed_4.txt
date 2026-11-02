@@ -1,0 +1,104 @@
+
+==============================================================================
+B. rehearsal rankings re-scored on TEST feeders only (val feeders excluded)
+truth file: 1108 meters, 142 thieves (0.1282); attack counts {0: 966, 1: 15, 2: 18, 3: 21, 4: 20, 5: 15, 6: 15, 7: 20, 8: 18}
+
+[inspect_p0.06.csv] ranked meters=1061 thieves among them=139 (0.1310) confirmed=43
+
+--- inspect_p0.06.csv   feeders=60 test feeders=9 val feeders=9  split-consistent=True
+  out-of-sample (val+test)   n= 342 thieves= 47 confirmed= 12 (c=0.26) base=0.137
+                             AUPR_true=0.690 AUPR_visible=0.188 ratio=3.66 (SCAR expectation ~1/c=3.92)  ROC_true=0.858
+                             top  5%: 15/17 = 0.88 [95% Wilson 0.66, 0.97]  stolen-energy captured=0.39
+                             top 10%: 26/34 = 0.76 [95% Wilson 0.60, 0.88]  stolen-energy captured=0.65
+                             top 15%: 32/51 = 0.63 [95% Wilson 0.49, 0.75]  stolen-energy captured=0.75
+  val only                   n= 172 thieves=  7 confirmed=  4 (c=0.57) base=0.041
+                             AUPR_true=0.441 AUPR_visible=0.279 ratio=1.58 (SCAR expectation ~1/c=1.75)  ROC_true=0.882
+                             top  5%: 3/9 = 0.33 [95% Wilson 0.12, 0.65]  stolen-energy captured=0.73
+                             top 10%: 4/17 = 0.24 [95% Wilson 0.10, 0.47]  stolen-energy captured=0.78
+                             top 15%: 4/26 = 0.15 [95% Wilson 0.06, 0.34]  stolen-energy captured=0.78
+  TEST only                  n= 170 thieves= 40 confirmed=  8 (c=0.20) base=0.235
+                             AUPR_true=0.751 AUPR_visible=0.204 ratio=3.67 (SCAR expectation ~1/c=5.00)  ROC_true=0.838
+                             top  5%: 8/8 = 1.00 [95% Wilson 0.68, 1.00]  stolen-energy captured=0.28
+                             top 10%: 14/17 = 0.82 [95% Wilson 0.59, 0.94]  stolen-energy captured=0.49
+                             top 15%: 21/26 = 0.81 [95% Wilson 0.62, 0.91]  stolen-energy captured=0.61
+                             feeder-cluster bootstrap (2000 draws): AUPR_true 95% [0.389, 0.904]  ROC_true 95% [0.624, 0.939]
+
+[inspect_p0.10.csv] ranked meters=1061 thieves among them=139 (0.1310) confirmed=43
+
+--- inspect_p0.10.csv   feeders=60 test feeders=9 val feeders=9  split-consistent=True
+  out-of-sample (val+test)   n= 342 thieves= 47 confirmed= 12 (c=0.26) base=0.137
+                             AUPR_true=0.659 AUPR_visible=0.183 ratio=3.60 (SCAR expectation ~1/c=3.92)  ROC_true=0.823
+                             top  5%: 15/17 = 0.88 [95% Wilson 0.66, 0.97]  stolen-energy captured=0.53
+                             top 10%: 26/34 = 0.76 [95% Wilson 0.60, 0.88]  stolen-energy captured=0.65
+                             top 15%: 30/51 = 0.59 [95% Wilson 0.45, 0.71]  stolen-energy captured=0.67
+  val only                   n= 172 thieves=  7 confirmed=  4 (c=0.57) base=0.041
+                             AUPR_true=0.501 AUPR_visible=0.490 ratio=1.02 (SCAR expectation ~1/c=1.75)  ROC_true=0.765
+                             top  5%: 3/9 = 0.33 [95% Wilson 0.12, 0.65]  stolen-energy captured=0.73
+                             top 10%: 4/17 = 0.24 [95% Wilson 0.10, 0.47]  stolen-energy captured=0.78
+                             top 15%: 4/26 = 0.15 [95% Wilson 0.06, 0.34]  stolen-energy captured=0.78
+  TEST only                  n= 170 thieves= 40 confirmed=  8 (c=0.20) base=0.235
+                             AUPR_true=0.706 AUPR_visible=0.185 ratio=3.81 (SCAR expectation ~1/c=5.00)  ROC_true=0.811
+                             top  5%: 8/8 = 1.00 [95% Wilson 0.68, 1.00]  stolen-energy captured=0.34
+                             top 10%: 14/17 = 0.82 [95% Wilson 0.59, 0.94]  stolen-energy captured=0.49
+                             top 15%: 20/26 = 0.77 [95% Wilson 0.58, 0.89]  stolen-energy captured=0.57
+                             feeder-cluster bootstrap (2000 draws): AUPR_true 95% [0.374, 0.820]  ROC_true 95% [0.684, 0.882]
+
+[inspect_p0.13.csv] ranked meters=1061 thieves among them=139 (0.1310) confirmed=43
+
+--- inspect_p0.13.csv   feeders=60 test feeders=9 val feeders=9  split-consistent=True
+  out-of-sample (val+test)   n= 342 thieves= 47 confirmed= 12 (c=0.26) base=0.137
+                             AUPR_true=0.746 AUPR_visible=0.200 ratio=3.72 (SCAR expectation ~1/c=3.92)  ROC_true=0.895
+                             top  5%: 17/17 = 1.00 [95% Wilson 0.82, 1.00]  stolen-energy captured=0.41
+                             top 10%: 26/34 = 0.76 [95% Wilson 0.60, 0.88]  stolen-energy captured=0.65
+                             top 15%: 29/51 = 0.57 [95% Wilson 0.43, 0.69]  stolen-energy captured=0.66
+  val only                   n= 172 thieves=  7 confirmed=  4 (c=0.57) base=0.041
+                             AUPR_true=0.495 AUPR_visible=0.321 ratio=1.54 (SCAR expectation ~1/c=1.75)  ROC_true=0.745
+                             top  5%: 3/9 = 0.33 [95% Wilson 0.12, 0.65]  stolen-energy captured=0.73
+                             top 10%: 3/17 = 0.18 [95% Wilson 0.06, 0.41]  stolen-energy captured=0.73
+                             top 15%: 4/26 = 0.15 [95% Wilson 0.06, 0.34]  stolen-energy captured=0.73
+  TEST only                  n= 170 thieves= 40 confirmed=  8 (c=0.20) base=0.235
+                             AUPR_true=0.802 AUPR_visible=0.214 ratio=3.76 (SCAR expectation ~1/c=5.00)  ROC_true=0.895
+                             top  5%: 8/8 = 1.00 [95% Wilson 0.68, 1.00]  stolen-energy captured=0.28
+                             top 10%: 17/17 = 1.00 [95% Wilson 0.82, 1.00]  stolen-energy captured=0.54
+                             top 15%: 22/26 = 0.85 [95% Wilson 0.66, 0.94]  stolen-energy captured=0.63
+                             feeder-cluster bootstrap (2000 draws): AUPR_true 95% [0.437, 0.901]  ROC_true 95% [0.779, 0.947]
+
+[inspect_p0.18.csv] ranked meters=1061 thieves among them=139 (0.1310) confirmed=43
+
+--- inspect_p0.18.csv   feeders=60 test feeders=9 val feeders=9  split-consistent=True
+  out-of-sample (val+test)   n= 342 thieves= 47 confirmed= 12 (c=0.26) base=0.137
+                             AUPR_true=0.672 AUPR_visible=0.202 ratio=3.32 (SCAR expectation ~1/c=3.92)  ROC_true=0.809
+                             top  5%: 17/17 = 1.00 [95% Wilson 0.82, 1.00]  stolen-energy captured=0.56
+                             top 10%: 26/34 = 0.76 [95% Wilson 0.60, 0.88]  stolen-energy captured=0.64
+                             top 15%: 28/51 = 0.55 [95% Wilson 0.41, 0.68]  stolen-energy captured=0.65
+  val only                   n= 172 thieves=  7 confirmed=  4 (c=0.57) base=0.041
+                             AUPR_true=0.499 AUPR_visible=0.308 ratio=1.62 (SCAR expectation ~1/c=1.75)  ROC_true=0.731
+                             top  5%: 3/9 = 0.33 [95% Wilson 0.12, 0.65]  stolen-energy captured=0.73
+                             top 10%: 4/17 = 0.24 [95% Wilson 0.10, 0.47]  stolen-energy captured=0.73
+                             top 15%: 4/26 = 0.15 [95% Wilson 0.06, 0.34]  stolen-energy captured=0.73
+  TEST only                  n= 170 thieves= 40 confirmed=  8 (c=0.20) base=0.235
+                             AUPR_true=0.744 AUPR_visible=0.227 ratio=3.27 (SCAR expectation ~1/c=5.00)  ROC_true=0.823
+                             top  5%: 8/8 = 1.00 [95% Wilson 0.68, 1.00]  stolen-energy captured=0.33
+                             top 10%: 16/17 = 0.94 [95% Wilson 0.73, 0.99]  stolen-energy captured=0.52
+                             top 15%: 22/26 = 0.85 [95% Wilson 0.66, 0.94]  stolen-energy captured=0.58
+                             feeder-cluster bootstrap (2000 draws): AUPR_true 95% [0.482, 0.848]  ROC_true 95% [0.736, 0.881]
+
+[inspect_prior_default.csv] ranked meters=1061 thieves among them=139 (0.1310) confirmed=43
+
+--- inspect_prior_default.csv   feeders=60 test feeders=9 val feeders=9  split-consistent=True
+  out-of-sample (val+test)   n= 342 thieves= 47 confirmed= 12 (c=0.26) base=0.137
+                             AUPR_true=0.569 AUPR_visible=0.154 ratio=3.69 (SCAR expectation ~1/c=3.92)  ROC_true=0.795
+                             top  5%: 17/17 = 1.00 [95% Wilson 0.82, 1.00]  stolen-energy captured=0.56
+                             top 10%: 19/34 = 0.56 [95% Wilson 0.39, 0.71]  stolen-energy captured=0.57
+                             top 15%: 21/51 = 0.41 [95% Wilson 0.29, 0.55]  stolen-energy captured=0.59
+  val only                   n= 172 thieves=  7 confirmed=  4 (c=0.57) base=0.041
+                             AUPR_true=0.435 AUPR_visible=0.401 ratio=1.08 (SCAR expectation ~1/c=1.75)  ROC_true=0.759
+                             top  5%: 3/9 = 0.33 [95% Wilson 0.12, 0.65]  stolen-energy captured=0.73
+                             top 10%: 3/17 = 0.18 [95% Wilson 0.06, 0.41]  stolen-energy captured=0.73
+                             top 15%: 3/26 = 0.12 [95% Wilson 0.04, 0.29]  stolen-energy captured=0.73
+  TEST only                  n= 170 thieves= 40 confirmed=  8 (c=0.20) base=0.235
+                             AUPR_true=0.671 AUPR_visible=0.155 ratio=4.33 (SCAR expectation ~1/c=5.00)  ROC_true=0.798
+                             top  5%: 8/8 = 1.00 [95% Wilson 0.68, 1.00]  stolen-energy captured=0.34
+                             top 10%: 15/17 = 0.88 [95% Wilson 0.66, 0.97]  stolen-energy captured=0.51
+                             top 15%: 17/26 = 0.65 [95% Wilson 0.46, 0.81]  stolen-energy captured=0.53
+                             feeder-cluster bootstrap (2000 draws): AUPR_true 95% [0.333, 0.821]  ROC_true 95% [0.629, 0.866]

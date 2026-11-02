@@ -1,0 +1,216 @@
+==============================================================================
+A1. ablation, per seed (network sim)
+               config  seed     aupr  roc_auc  r_at_10  prevalence  temperature  n_feeders     T  epochs
+                 full   0.0 0.850173 0.966153 0.785714    0.057495          0.5      150.0 365.0    20.0
+                 full   1.0 0.894696 0.958622 0.705128    0.137809          0.5      150.0 365.0    20.0
+                 full   2.0 0.897580 0.968577 0.560000    0.168539          0.5      150.0 365.0    20.0
+   full+ssl8+aug:both   0.0 0.827260 0.967320 0.821429    0.057495          0.5      150.0 365.0    20.0
+   full+ssl8+aug:both   1.0 0.854816 0.944777 0.653846    0.137809          0.5      150.0 365.0    20.0
+   full+ssl8+aug:both   2.0 0.931437 0.978486 0.573333    0.168539          0.5      150.0 365.0    20.0
+             temporal   0.0 0.759830 0.883364 0.750000    0.057495          0.5      150.0 365.0    20.0
+             temporal   1.0 0.819387 0.896910 0.653846    0.137809          0.5      150.0 365.0    20.0
+             temporal   2.0 0.863301 0.915856 0.586667    0.168539          0.5      150.0 365.0    20.0
+      temporal+static   0.0 0.876361 0.977669 0.964286    0.057495          0.5      150.0 365.0    20.0
+      temporal+static   1.0 0.889914 0.958097 0.705128    0.137809          0.5      150.0 365.0    20.0
+      temporal+static   2.0 0.921790 0.974523 0.573333    0.168539          0.5      150.0 365.0    20.0
+temporal+static+graph   0.0 0.862849 0.961329 0.821429    0.057495          0.5      150.0 365.0    20.0
+temporal+static+graph   1.0 0.888956 0.959647 0.705128    0.137809          0.5      150.0 365.0    20.0
+temporal+static+graph   2.0 0.923705 0.977874 0.573333    0.168539          0.5      150.0 365.0    20.0
+
+A2. ablation mean / sd / n
+                       aupr_mean  roc_auc_mean  r_at_10_mean  aupr_sd  roc_auc_sd  r_at_10_sd  n
+config                                                                                          
+temporal                  0.8142        0.8987        0.6635   0.0519      0.0163      0.0821  3
+temporal+static           0.8960        0.9701        0.7476   0.0233      0.0105      0.1989  3
+temporal+static+graph     0.8918        0.9663        0.7000   0.0305      0.0101      0.1241  3
+full                      0.8808        0.9645        0.6836   0.0266      0.0052      0.1144  3
+full+ssl8+aug:both        0.8712        0.9635        0.6829   0.0540      0.0172      0.1266  3
+
+A3. paired per-seed differences (same seed => same simulated network & split)
+  AUPR temporal+static        - temporal              : per-seed [0.1165 0.0705 0.0585]  mean=+0.0818 sd=0.0306
+  AUPR temporal+static+graph  - temporal+static       : per-seed [-0.0135 -0.001   0.0019]  mean=-0.0042 sd=0.0082
+  AUPR full                   - temporal+static+graph : per-seed [-0.0127  0.0057 -0.0261]  mean=-0.0110 sd=0.0160
+  AUPR full                   - temporal              : per-seed [0.0903 0.0753 0.0343]  mean=+0.0666 sd=0.0290
+
+A4. energy recovery + fairness (mean over seeds)
+                       er_p_5  er_ps_5  er_p_10  er_ps_10  er_p_20  er_ps_20  prev_lo  flag_lo  rec_lo  prev_hi  flag_hi  rec_hi
+config                                                                                                                          
+temporal                0.608    0.110    0.721     0.221    0.836     0.275    0.045    0.042   0.721    0.266    0.184   0.672
+temporal+static         0.593    0.110    0.768     0.221    0.896     0.275    0.045    0.031   0.605    0.266    0.276   0.843
+temporal+static+graph   0.566    0.110    0.774     0.221    0.899     0.275    0.045    0.029   0.588    0.266    0.281   0.805
+full                    0.612    0.546    0.788     0.793    0.898     0.913    0.045    0.030   0.607    0.266    0.290   0.857
+full+ssl8+aug:both      0.657    0.656    0.839     0.822    0.909     0.907    0.045    0.041   0.644    0.266    0.279   0.817
+
+A5. per-attack recall@10% (mean over seeds)
+                       r10_h1  r10_h2  r10_h3  r10_h4  r10_h5  r10_h6  r10_h7  r10_h8
+config                                                                               
+temporal                0.462   1.000     1.0     1.0   0.892   0.000   0.923   0.431
+temporal+static         0.575   1.000     1.0     1.0   0.851   0.306   0.846   0.569
+temporal+static+graph   0.622   1.000     1.0     1.0   0.773   0.139   0.846   0.542
+full                    0.668   1.000     1.0     1.0   0.695   0.083   0.846   0.542
+full+ssl8+aug:both      0.752   0.917     1.0     1.0   0.628   0.056   0.846   0.514
+
+A6. base models
+   script   config               dataset  seed     aupr  roc_auc  prevalence  r_at_10
+    train base-cnn          sim_flat.csv   0.0 0.758451 0.853694    0.134615 0.634921
+baselines  xgboost synthetic-percustomer   0.0 0.791758 0.884449    0.091514 0.745455
+    train base-cnn synthetic-percustomer   0.0 0.900077 0.961938    0.091514 0.836364
+
+A7. augmentation experiment
+     config  seed     aupr  roc_auc  r_at_10  prevalence   r10_h1   r10_h2   r10_h3   r10_h4   r10_h5   r10_h6   r10_h7   r10_h8
+   aug=none   0.0 0.569018 0.746479 0.509615    0.094718 0.500000 0.823529 1.000000 1.000000 0.000000 0.071429 0.600000 0.157895
+  aug=jokar   0.0 0.641920 0.799828 0.586538    0.094718 0.500000 0.882353 1.000000 1.000000 0.750000 0.071429 0.500000 0.105263
+aug=learned   0.0 0.514207 0.763881 0.480769    0.094718 0.500000 0.764706 0.750000 1.000000 0.000000 0.142857 0.400000 0.263158
+   aug=both   0.0 0.648621 0.840040 0.586538    0.094718 0.500000 0.882353 1.000000 1.000000 0.500000 0.071429 0.600000 0.210526
+   aug=none   1.0 0.570892 0.726667 0.454545    0.147849 0.562500 0.666667 1.000000 1.000000 0.038462 0.045455 0.266667 0.142857
+  aug=jokar   1.0 0.731427 0.811873 0.606061    0.147849 0.375000 0.875000 1.000000 1.000000 0.961538 0.000000 0.400000 0.047619
+aug=learned   1.0 0.564728 0.750362 0.430303    0.147849 0.562500 0.625000 1.000000 0.880000 0.038462 0.045455 0.200000 0.190476
+   aug=both   1.0 0.689018 0.828296 0.509091    0.147849 0.562500 0.916667 1.000000 1.000000 0.115385 0.045455 0.333333 0.142857
+   aug=none   2.0 0.655894 0.782456 0.467662    0.174026 0.423077 0.772727 1.000000 1.000000 0.000000 0.047619 0.523810 0.093750
+  aug=jokar   2.0 0.675058 0.801313 0.507463    0.174026 0.423077 0.681818 0.896552 0.909091 0.642857 0.047619 0.476190 0.031250
+aug=learned   2.0 0.590791 0.781501 0.393035    0.174026 0.423077 0.500000 0.862069 0.818182 0.000000 0.047619 0.476190 0.093750
+   aug=both   2.0 0.662942 0.818976 0.437811    0.174026 0.423077 0.681818 0.896552 0.909091 0.000000 0.095238 0.476190 0.125000
+
+A8. rehearsal + prior sweep (eval_ranking rows)
+          timestamp                  config  aupr_visible  aupr_true  roc_true  base_rate  hit_p_5  new_p_5  hit_p_10  new_p_10  hit_p_15  new_p_15
+2026-11-01T14:28:33         rehearsal-p0.06      0.164214   0.328366  0.617422   0.198276 0.529412      6.0  0.457143      12.0  0.403846      16.0
+2026-11-01T14:28:44         rehearsal-p0.10      0.136510   0.422220  0.626825   0.198276 0.705882      9.0  0.571429      15.0  0.442308      18.0
+2026-11-01T14:28:55         rehearsal-p0.18      0.210167   0.578035  0.686094   0.198276 0.941176     11.0  0.742857      18.0  0.634615      25.0
+2026-11-01T14:29:06               rehearsal      0.137092   0.439211  0.643499   0.198276 0.705882      9.0  0.571429      15.0  0.480769      20.0
+2026-11-01T14:30:04 rehearsal-prior-default      0.157269   0.316097  0.634928   0.198276 0.411765      5.0  0.342857       8.0  0.403846      17.0
+
+A9. SSL under PU (test labels complete; val labels hidden too)
+                  aupr  roc_auc  r_at_10  rec_lo  rec_hi  flag_lo  flag_hi  r10_h6  r10_h8  aupr_sd  roc_auc_sd  n
+config                                                                                                            
+full+pu0.3       0.535    0.815    0.462   0.133   0.194    0.012    0.050   0.028   0.250    0.068       0.024  3
+full+ssl8+pu0.3  0.525    0.779    0.470   0.292   0.383    0.027    0.115   0.083   0.319    0.127       0.015  3
+
+A10. without label signal in meter age / alarms
+                                aupr  roc_auc  r_at_10  rec_lo  rec_hi  flag_lo  flag_hi  r10_h6  r10_h8  aupr_sd  roc_auc_sd  n
+config                                                                                                                          
+temporal+static+nolabelstatic  0.877    0.956    0.712   0.607   0.786    0.029     0.24   0.111   0.472    0.037       0.014  3
+full+nolabelstatic             0.846    0.955    0.691   0.530   0.785    0.025     0.30   0.056   0.569    0.027       0.001  3
+
+A11. position code
+           aupr  roc_auc  r_at_10  rec_lo  rec_hi  flag_lo  flag_hi  r10_h6  r10_h8  aupr_sd  roc_auc_sd  n
+config                                                                                                     
+full      0.881    0.964    0.684   0.607   0.857    0.030    0.290   0.083   0.542    0.027       0.005  3
+full+pos  0.871    0.954    0.683   0.624   0.869    0.032    0.297   0.167   0.597    0.017       0.011  3
+
+A12. region removed from inputs
+                aupr  roc_auc  r_at_10  rec_lo  rec_hi  flag_lo  flag_hi  r10_h6  r10_h8  aupr_sd  roc_auc_sd  n
+config                                                                                                          
+full           0.881    0.964    0.684   0.607   0.857    0.030    0.290   0.083   0.542    0.027       0.005  3
+full+noregion  0.879    0.966    0.693   0.646   0.790    0.033    0.249   0.056   0.597    0.040       0.003  3
+
+A13. augmentation experiment, mean / sd over seeds
+              aupr  roc_auc  r_at_10  r10_h7  r10_h8  aupr_sd  roc_auc_sd  r_at_10_sd  r10_h7_sd  r10_h8_sd  n
+config                                                                                                        
+aug=both     0.667    0.829    0.511   0.470   0.159    0.020       0.011       0.074      0.133      0.045  3
+aug=jokar    0.683    0.804    0.567   0.459   0.061    0.045       0.007       0.052      0.052      0.039  3
+aug=learned  0.557    0.765    0.435   0.359   0.182    0.039       0.016       0.044      0.143      0.085  3
+aug=none     0.599    0.752    0.477   0.463   0.132    0.050       0.028       0.029      0.175      0.034  3
+
+==============================================================================
+B. rehearsal rankings re-scored on TEST feeders only (val feeders excluded)
+truth file: 1203 meters, 174 thieves (0.1446); attack counts {0: 1029, 1: 25, 2: 25, 3: 18, 4: 24, 5: 19, 6: 26, 7: 18, 8: 19}
+
+[inspect.csv] ranked meters=1156 thieves among them=167 (0.1445) confirmed=51
+
+--- inspect.csv   feeders=60 test feeders=9 val feeders=9  split-consistent=True
+  out-of-sample (val+test)   n= 348 thieves= 69 confirmed= 15 (c=0.22) base=0.198
+                             AUPR_true=0.439 AUPR_visible=0.137 ratio=3.20 (SCAR expectation ~1/c=4.60)  ROC_true=0.643
+                             top  5%: 12/17 = 0.71 [95% Wilson 0.47, 0.87]  stolen-energy captured=0.17
+                             top 10%: 20/35 = 0.57 [95% Wilson 0.41, 0.72]  stolen-energy captured=0.25
+                             top 15%: 25/52 = 0.48 [95% Wilson 0.35, 0.61]  stolen-energy captured=0.31
+  val only                   n= 188 thieves= 31 confirmed=  5 (c=0.16) base=0.165
+                             AUPR_true=0.396 AUPR_visible=0.226 ratio=1.75 (SCAR expectation ~1/c=6.20)  ROC_true=0.591
+                             top  5%: 6/9 = 0.67 [95% Wilson 0.35, 0.88]  stolen-energy captured=0.14
+                             top 10%: 9/19 = 0.47 [95% Wilson 0.27, 0.68]  stolen-energy captured=0.21
+                             top 15%: 12/28 = 0.43 [95% Wilson 0.27, 0.61]  stolen-energy captured=0.30
+  TEST only                  n= 160 thieves= 38 confirmed= 10 (c=0.26) base=0.237
+                             AUPR_true=0.513 AUPR_visible=0.131 ratio=3.90 (SCAR expectation ~1/c=3.80)  ROC_true=0.695
+                             top  5%: 6/8 = 0.75 [95% Wilson 0.41, 0.93]  stolen-energy captured=0.20
+                             top 10%: 10/16 = 0.62 [95% Wilson 0.39, 0.82]  stolen-energy captured=0.28
+                             top 15%: 13/24 = 0.54 [95% Wilson 0.35, 0.72]  stolen-energy captured=0.33
+                             feeder-cluster bootstrap (1998 draws): AUPR_true 95% [0.272, 0.729]  ROC_true 95% [0.614, 0.806]
+
+[inspect_p0.06.csv] ranked meters=1156 thieves among them=167 (0.1445) confirmed=51
+
+--- inspect_p0.06.csv   feeders=60 test feeders=9 val feeders=9  split-consistent=True
+  out-of-sample (val+test)   n= 348 thieves= 69 confirmed= 15 (c=0.22) base=0.198
+                             AUPR_true=0.328 AUPR_visible=0.164 ratio=2.00 (SCAR expectation ~1/c=4.60)  ROC_true=0.617
+                             top  5%: 9/17 = 0.53 [95% Wilson 0.31, 0.74]  stolen-energy captured=0.12
+                             top 10%: 16/35 = 0.46 [95% Wilson 0.30, 0.62]  stolen-energy captured=0.21
+                             top 15%: 21/52 = 0.40 [95% Wilson 0.28, 0.54]  stolen-energy captured=0.25
+  val only                   n= 188 thieves= 31 confirmed=  5 (c=0.16) base=0.165
+                             AUPR_true=0.289 AUPR_visible=0.286 ratio=1.01 (SCAR expectation ~1/c=6.20)  ROC_true=0.563
+                             top  5%: 4/9 = 0.44 [95% Wilson 0.19, 0.73]  stolen-energy captured=0.09
+                             top 10%: 7/19 = 0.37 [95% Wilson 0.19, 0.59]  stolen-energy captured=0.17
+                             top 15%: 10/28 = 0.36 [95% Wilson 0.21, 0.54]  stolen-energy captured=0.21
+  TEST only                  n= 160 thieves= 38 confirmed= 10 (c=0.26) base=0.237
+                             AUPR_true=0.416 AUPR_visible=0.193 ratio=2.15 (SCAR expectation ~1/c=3.80)  ROC_true=0.670
+                             top  5%: 4/8 = 0.50 [95% Wilson 0.22, 0.78]  stolen-energy captured=0.13
+                             top 10%: 8/16 = 0.50 [95% Wilson 0.28, 0.72]  stolen-energy captured=0.25
+                             top 15%: 10/24 = 0.42 [95% Wilson 0.24, 0.61]  stolen-energy captured=0.28
+                             feeder-cluster bootstrap (1998 draws): AUPR_true 95% [0.208, 0.627]  ROC_true 95% [0.600, 0.756]
+
+[inspect_p0.10.csv] ranked meters=1156 thieves among them=167 (0.1445) confirmed=51
+
+--- inspect_p0.10.csv   feeders=60 test feeders=9 val feeders=9  split-consistent=True
+  out-of-sample (val+test)   n= 348 thieves= 69 confirmed= 15 (c=0.22) base=0.198
+                             AUPR_true=0.422 AUPR_visible=0.137 ratio=3.09 (SCAR expectation ~1/c=4.60)  ROC_true=0.627
+                             top  5%: 12/17 = 0.71 [95% Wilson 0.47, 0.87]  stolen-energy captured=0.17
+                             top 10%: 20/35 = 0.57 [95% Wilson 0.41, 0.72]  stolen-energy captured=0.25
+                             top 15%: 23/52 = 0.44 [95% Wilson 0.32, 0.58]  stolen-energy captured=0.27
+  val only                   n= 188 thieves= 31 confirmed=  5 (c=0.16) base=0.165
+                             AUPR_true=0.374 AUPR_visible=0.200 ratio=1.87 (SCAR expectation ~1/c=6.20)  ROC_true=0.571
+                             top  5%: 6/9 = 0.67 [95% Wilson 0.35, 0.88]  stolen-energy captured=0.14
+                             top 10%: 9/19 = 0.47 [95% Wilson 0.27, 0.68]  stolen-energy captured=0.21
+                             top 15%: 10/28 = 0.36 [95% Wilson 0.21, 0.54]  stolen-energy captured=0.21
+  TEST only                  n= 160 thieves= 38 confirmed= 10 (c=0.26) base=0.237
+                             AUPR_true=0.492 AUPR_visible=0.143 ratio=3.43 (SCAR expectation ~1/c=3.80)  ROC_true=0.678
+                             top  5%: 5/8 = 0.62 [95% Wilson 0.31, 0.86]  stolen-energy captured=0.17
+                             top 10%: 10/16 = 0.62 [95% Wilson 0.39, 0.82]  stolen-energy captured=0.30
+                             top 15%: 13/24 = 0.54 [95% Wilson 0.35, 0.72]  stolen-energy captured=0.33
+                             feeder-cluster bootstrap (1999 draws): AUPR_true 95% [0.243, 0.709]  ROC_true 95% [0.593, 0.798]
+
+[inspect_p0.18.csv] ranked meters=1156 thieves among them=167 (0.1445) confirmed=51
+
+--- inspect_p0.18.csv   feeders=60 test feeders=9 val feeders=9  split-consistent=True
+  out-of-sample (val+test)   n= 348 thieves= 69 confirmed= 15 (c=0.22) base=0.198
+                             AUPR_true=0.578 AUPR_visible=0.210 ratio=2.75 (SCAR expectation ~1/c=4.60)  ROC_true=0.686
+                             top  5%: 16/17 = 0.94 [95% Wilson 0.73, 0.99]  stolen-energy captured=0.26
+                             top 10%: 26/35 = 0.74 [95% Wilson 0.58, 0.86]  stolen-energy captured=0.62
+                             top 15%: 33/52 = 0.63 [95% Wilson 0.50, 0.75]  stolen-energy captured=0.69
+  val only                   n= 188 thieves= 31 confirmed=  5 (c=0.16) base=0.165
+                             AUPR_true=0.599 AUPR_visible=0.298 ratio=2.01 (SCAR expectation ~1/c=6.20)  ROC_true=0.692
+                             top  5%: 9/9 = 1.00 [95% Wilson 0.70, 1.00]  stolen-energy captured=0.26
+                             top 10%: 15/19 = 0.79 [95% Wilson 0.57, 0.91]  stolen-energy captured=0.79
+                             top 15%: 16/28 = 0.57 [95% Wilson 0.39, 0.73]  stolen-energy captured=0.80
+  TEST only                  n= 160 thieves= 38 confirmed= 10 (c=0.26) base=0.237
+                             AUPR_true=0.584 AUPR_visible=0.223 ratio=2.63 (SCAR expectation ~1/c=3.80)  ROC_true=0.685
+                             top  5%: 7/8 = 0.88 [95% Wilson 0.53, 0.98]  stolen-energy captured=0.24
+                             top 10%: 12/16 = 0.75 [95% Wilson 0.51, 0.90]  stolen-energy captured=0.45
+                             top 15%: 17/24 = 0.71 [95% Wilson 0.51, 0.85]  stolen-energy captured=0.57
+                             feeder-cluster bootstrap (1999 draws): AUPR_true 95% [0.417, 0.736]  ROC_true 95% [0.594, 0.773]
+
+[inspect_prior_default.csv] ranked meters=1156 thieves among them=167 (0.1445) confirmed=51
+
+--- inspect_prior_default.csv   feeders=60 test feeders=9 val feeders=9  split-consistent=True
+  out-of-sample (val+test)   n= 348 thieves= 69 confirmed= 15 (c=0.22) base=0.198
+                             AUPR_true=0.316 AUPR_visible=0.157 ratio=2.01 (SCAR expectation ~1/c=4.60)  ROC_true=0.635
+                             top  5%: 7/17 = 0.41 [95% Wilson 0.22, 0.64]  stolen-energy captured=0.11
+                             top 10%: 12/35 = 0.34 [95% Wilson 0.21, 0.51]  stolen-energy captured=0.15
+                             top 15%: 21/52 = 0.40 [95% Wilson 0.28, 0.54]  stolen-energy captured=0.25
+  val only                   n= 188 thieves= 31 confirmed=  5 (c=0.16) base=0.165
+                             AUPR_true=0.256 AUPR_visible=0.277 ratio=0.92 (SCAR expectation ~1/c=6.20)  ROC_true=0.565
+                             top  5%: 2/9 = 0.22 [95% Wilson 0.06, 0.55]  stolen-energy captured=0.07
+                             top 10%: 6/19 = 0.32 [95% Wilson 0.15, 0.54]  stolen-energy captured=0.11
+                             top 15%: 9/28 = 0.32 [95% Wilson 0.18, 0.51]  stolen-energy captured=0.18
+  TEST only                  n= 160 thieves= 38 confirmed= 10 (c=0.26) base=0.237
+                             AUPR_true=0.428 AUPR_visible=0.125 ratio=3.43 (SCAR expectation ~1/c=3.80)  ROC_true=0.700
+                             top  5%: 5/8 = 0.62 [95% Wilson 0.31, 0.86]  stolen-energy captured=0.17
+                             top 10%: 7/16 = 0.44 [95% Wilson 0.23, 0.67]  stolen-energy captured=0.23
+                             top 15%: 12/24 = 0.50 [95% Wilson 0.31, 0.69]  stolen-energy captured=0.34
+                             feeder-cluster bootstrap (1997 draws): AUPR_true 95% [0.196, 0.648]  ROC_true 95% [0.639, 0.771]

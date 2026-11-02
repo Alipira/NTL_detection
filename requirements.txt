@@ -1,0 +1,15 @@
+# Core
+numpy>=1.26
+pandas>=2.0
+scipy>=1.11
+scikit-learn>=1.3
+
+# Deep model
+torch>=2.1          # the default Linux wheel includes CUDA; CPU also works
+
+# Classical baseline
+xgboost>=2.0
+matplotlib>=3.8
+
+# Regression tests
+pytest>=7.0
