@@ -141,7 +141,7 @@ on an independent network using all eight attacks. Mean over 5 seeds:
 | none           | 0.634 | 0.778   | 0.52  | 0.16  |
 | fixed (Jokar)  | 0.764 | 0.857   | 0.53  | 0.09  |
 | learned (cVAE) | 0.685 | 0.828   | 0.62  | 0.34  |
-| both           | **0.815** | **0.913** | 0.60 | — |
+| both           | **0.815** | **0.913** | 0.60  | 0.18  |
 
 Reading: against no augmentation, AUPR is higher on 5/5 seeds for both and for the
 fixed functions, and on 4/5 for the cVAE; both beats fixed alone on 3/5. The cVAE

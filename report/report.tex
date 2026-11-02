@@ -603,8 +603,8 @@ The per-attack pattern matches \cref{prop:cvae}:
 \begin{itemize}
 \item \textbf{$h_8$ ramp} is unseen by every variant and is a multiplicative under-reporting mask, inside the cVAE's support. The cVAE raises its recall on all five seeds (mean $0.16\to0.34$); the fixed functions never raise it (0.09).
 \item \textbf{$h_5$ and $h_6$} are energy-preserving, outside the cVAE's support. The cVAE leaves $h_5$ unchanged (0.06 to 0.05); the fixed functions, which contain $h_5$ and $h_6$ by hand, raise $h_5$ to 0.96 and $h_6$ from 0.05 to 0.22. They are not unseen for that variant.
-\item \textbf{$h_7$} (unseen) moves 0.52 / 0.53 / 0.62 / 0.60 (none / fixed / learned / both) with seed s.d.\ 0.13--0.26; no conclusion.
-\item \textbf{$h_1$} falls from 0.47 to 0.33 with the fixed functions and to 0.31 with both (lower on 4/5 seeds), so fixed augmentation trades $h_1$ for $h_5$.
+\item \textbf{$h_7$} (unseen) moves 0.52 / 0.53 / 0.62 / 0.60 (none / fixed / learned / both) with seed s.d.\ 0.07--0.26; no conclusion.
+\item \textbf{$h_1$} falls from 0.47 to 0.33 with the fixed functions and to 0.31 with both (lower on 3/5 seeds with the fixed functions, 4/5 with both), so fixed augmentation trades $h_1$ for $h_5$.
 \end{itemize}
 
 \subsection{Deployment rehearsal}
