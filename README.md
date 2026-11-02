@@ -90,7 +90,7 @@ needs, with the truth hidden from the model:
   fraction in 4–9%. The technical-loss *fraction varies with load*, so the
   conservation head must cope with an imperfect flat-tl assumption — as on a
   real feeder. Sanity check: per-feeder conservation residual vs true stolen
-  energy correlates **0.94–0.96** (seeds 0–2).
+  energy correlates **0.94–0.98** (seeds 0–4).
 - **Head metering** with noise; static features incl. contracted power, meter
   age, tariff, region index, alarms, archetype.
 - **Attack library**: the six Jokar functions **plus two novel field-style
@@ -106,16 +106,16 @@ them) on unlabeled training series; the encoder then initializes PI-STGAT's
 temporal branch. A model that can fill in a customer's missing week has
 internalized their seasonality and rhythm — the structure theft violates.
 
-**Measured effect with scarce labels (PU, 30% of thieves revealed, sim data, 3
-seeds; hidden labels stay hidden on validation too):**
+**Measured effect with scarce labels (PU, 30% of thieves revealed, full model,
+simulator, 5 seeds; hidden labels stay hidden on training and validation):**
 
-| setting              | test AUPR     | test ROC      |
-|----------------------|:-------------:|:-------------:|
-| from scratch         | 0.535 ± 0.068 | 0.815 ± 0.024 |
-| + SSL (8 epochs)     | 0.525 ± 0.127 | 0.779 ± 0.015 |
+| setting              | test AUPR     | test ROC-AUC |
+|----------------------|:-------------:|:------------:|
+| from scratch         | 0.657 ± 0.125 | 0.857        |
+| + SSL (50 epochs)    | 0.732 ± 0.067 | 0.894        |
 
-These runs show no benefit from SSL. An earlier single-seed gain, measured with
-full validation labels, was not reproduced.
+The mean favours SSL, but AUPR was higher on three seeds and lower on two; five
+seeds do not settle it.
 
 ## Learned generative augmenter (`ntl/generator.py`)
 
@@ -132,35 +132,50 @@ practice). Stated limitation: masks in (0,1) cannot represent
 energy-preserving attacks (h6 reversal) — those remain the temporal/graph
 branches' job.
 
-**Generalization experiment** (`exp_augment.py`): train on a network whose
-thieves use only h1–h4 at low prevalence (38–50 confirmed pairs), test on an
-independent network using all eight attacks. Mean ± s.d. over 3 seeds:
+**Generalization experiment** (`exp_augment.py`): train a temporal-only model on a
+network whose thieves use only h1–h4 at low prevalence (38–50 confirmed pairs), test
+on an independent network using all eight attacks. Mean over 5 seeds:
 
-| augmentation | AUPR | ROC | R@10% | recall@10% on novel h7 |
-|---|:---:|:---:|:---:|:---:|
-| none           | 0.599 ± 0.050 | 0.752 ± 0.028 | 0.477 | 0.46 ± 0.18 |
-| fixed (Jokar)  | **0.683 ± 0.045** | 0.804 ± 0.007 | **0.567** | 0.46 ± 0.05 |
-| learned (cVAE) | 0.557 ± 0.039 | 0.765 ± 0.016 | 0.435 | 0.36 ± 0.14 |
-| both (50/50)   | 0.667 ± 0.020 | **0.829 ± 0.011** | 0.511 | 0.47 ± 0.13 |
+| augmentation   | AUPR  | ROC-AUC | recall@10% on unseen h7 | recall@10% on unseen h8 |
+|----------------|:-----:|:-------:|:-----:|:-----:|
+| none           | 0.634 | 0.778   | 0.52  | 0.16  |
+| fixed (Jokar)  | 0.764 | 0.857   | 0.53  | 0.09  |
+| learned (cVAE) | 0.685 | 0.828   | 0.62  | 0.34  |
+| both           | **0.815** | **0.913** | 0.60 | — |
 
-Reading: the combination has the best ROC on all three seeds and fixed rules the
-best AUPR on two of three. No variant is reliably better on the novel h7 attack,
-and the cVAE alone has lower AUPR than no augmentation on every seed. Most of the
-fixed rules' gain comes from h5, which they hand-code. Augmentation is **physically
-coherent**: converting an honest customer leaves the head reading fixed, so the
-feeder's conservation residual grows by exactly the stolen amount -- the same
-signature a real thief leaves.
+Reading: against no augmentation, AUPR is higher on 5/5 seeds for both and for the
+fixed functions, and on 4/5 for the cVAE; both beats fixed alone on 3/5. The cVAE
+raises recall on the unseen ramp h8 on every seed, because a multiplicative
+under-reporting mask is inside its support; it leaves the energy-preserving h5/h6
+unchanged, which are outside it. The fixed functions contain h5 and h6 by hand, so
+those are not unseen for that variant, and they trade h1 recall for h5. h7 differences
+are within seed noise. Augmentation is **physically coherent**: converting an honest
+customer leaves the head reading fixed, so the feeder's conservation residual grows
+by exactly the stolen amount -- the same signature a real thief leaves.
 
-## Full-design end-to-end (sim, 150 feeders, T=365, 20 epochs, 3 seeds, CPU)
+## Reported run (simulator, 150 feeders, T=365, 200 epochs, 5 seeds, one RTX 4080)
 
-`--ssl-epochs 8 --aug both` → test AUPR 0.871 ± 0.054, ROC 0.964 ± 0.017. The full
-model without SSL or augmentation gets AUPR 0.881 ± 0.027, ROC 0.965 ± 0.005, so
-this combination adds no measurable overall gain. Per-attack recall@10%: h2–h4
-caught at 0.92–1.00, h1 0.75, h7 0.85, h5 0.63, h8 0.51; h6 reversal is the hard
-tail at 0.06. Test prevalence varies from 5.7% to 16.9% across seeds, so report
-spreads, not one seed. The simulator's static features carry label signal by
-design; `--no-label-static` and `--no-region-feature` measure how much. Numbers
-are directional, not benchmarks.
+Produced by the `run_pipeline.sh` command above; everything is in `outputs/gpu_run/`.
+Mean ± s.d. over 5 seeds:
+
+| configuration              | AUPR          | ROC-AUC       |
+|----------------------------|:-------------:|:-------------:|
+| temporal only              | 0.901 ± 0.037 | 0.950 ± 0.026 |
+| + static                   | 0.940 ± 0.029 | 0.977 ± 0.014 |
+| + feeder attention         | 0.948 ± 0.019 | 0.980 ± 0.011 |
+| + physics (full)           | 0.935 ± 0.028 | 0.977 ± 0.010 |
+| full + SSL + augmentation  | 0.969 ± 0.009 | 0.984 ± 0.007 |
+| full + positional code     | 0.971 ± 0.007 | 0.988 ± 0.007 |
+
+Paired per seed: static attributes help on 5/5 seeds (still 5/5 with age and alarms
+redrawn label-free); feeder attention 3/5, not separable from noise; the physics
+branch lowers AUPR on 4/5 (−0.013), consistent with the conservation term fixing
+feeder totals rather than within-feeder ranking; SSL + augmentation and the
+positional code each raise AUPR on 5/5. Per-attack recall@10%: h2–h4 0.87–1.00,
+h7 0.81–0.94, h8 0.58–0.76, h5 0.60–0.84, h1 0.35 → 0.53–0.56 once attention or
+physics is added; h6 reversal is the hard tail at 0.28–0.42 (0.48 with the
+positional code). Test prevalence varies from 0.057 to 0.216 across seeds, so
+report spreads, not one seed.
 
 ## Results table & plots
 
@@ -180,22 +195,17 @@ per-attack recall matrix, cost-aware energy-recovery curves, fairness by
 region, and the augmentation experiment (overall + seen-vs-unseen attack
 matrix), and the rehearsal.
 
-The report source, figures and PDF are in `report/`. Results behind the report are
-in `outputs/reference_cpu/`.
+The report source, figures and PDF are in `report/`. The run behind the report is
+`outputs/gpu_run/` (results table, printed numbers, rehearsal summaries and the
+all-seed figures; checkpoints and logs are regenerated by the pipeline). Replot with
+`python -m scripts.plot_results --csv outputs/gpu_run/results/results.csv --out my_figures`.
 
-A caution on **fig1**: it compares across *different datasets and
-prevalences*, so its AUPR bars are context, not a like-for-like claim. The
-base CNN runs on the easy homogeneous generator (six attacks, train-time
-augmentation matched to the test attacks, test prevalence 9.2%), while
-PI-STGAT runs on the harder network simulator (heterogeneous archetypes,
-weather, eight attacks, test prevalence 5.7% on seed 0 -- and AUPR's random baseline
-*equals* prevalence, so the same ranking skill scores lower at lower
-prevalence). On prevalence-free ROC-AUC and on recall@10%, PI-STGAT wins even
-across datasets; the equal-footing architecture comparison is **fig2** (same
-sim data, 3 seeds: temporal-only 0.814 -> +static 0.896 -> full 0.881 AUPR). To fill the missing cell --
-base CNN *on* simulator data -- run `python -m scripts.export_sim_csv` then
-`python -m scripts.train --data sim_flat.csv`; the row logs under its own dataset name. The results behind the report are in `outputs/reference_cpu/`; replot them with
-`python -m scripts.plot_results --csv outputs/reference_cpu/results.csv --out my_figures`.
+A caution on **fig1**: it is not a controlled comparison. On the simulator the
+per-customer CNN reaches AUPR 0.950 ± 0.021 and full PI-STGAT 0.935 ± 0.028, but the
+CNN splits customers (meters of one feeder fall into both training and test) while
+PI-STGAT holds out whole feeders, and the CNN trains with h1–h6 augmentation that
+matches six of the eight test attacks. No architectural advantage is established;
+a same-split, same-augmentation comparison is the next step.
 
 ## Files
 
@@ -229,8 +239,7 @@ scripts/             entry points, run as python -m scripts.NAME
   report_numbers.py  every number the research report uses
 tests/               regression tests
 report/              report.tex, figs/ and the PDF
-outputs/             reference_cpu/ holds the results behind the report;
-                     gpu_run/ the 5-seed GPU run (results/ and all_seeds figures)
+outputs/gpu_run/     the 5-seed run behind the report (results/, figures/all_seeds/)
 ```
 
 ## Using real data
@@ -253,8 +262,9 @@ Verified behavior: the loader treats blank readings as missing, drops dead/low-c
 unmapped meters with counts, removes coverage-dropped load from the head, warns
 about load it cannot place (it stays in the residuals and can read as theft), flags wrong-topology feeders via negative balance residuals, absorbs
 unmetered load into the tl estimate (a documented bias), and the evaluator
-quantifies how much PU evaluation understates the model (true AUPR was ~3.2x
-the confirmed-only AUPR out of sample at prior 0.13, one export and seed). Once this loop looks sane, swap in the
+quantifies how much PU evaluation understates the model (over 5 exports x 5 priors
+on test feeders, true AUPR averaged 3.5x the confirmed-only AUPR; predicted 3.7x,
+range 1.2-8.3). Once this loop looks sane, swap in the
 real files -- same commands, minus eval_ranking (no truth file exists; score a
 finished inspection campaign with it instead).
 
@@ -288,7 +298,8 @@ else is *unlabeled*, never assumed honest.
 Honest caveats for real runs: metrics computed against confirmed-only labels
 are **lower bounds** (unconfirmed thieves count as false positives); set `--prior`
 from an audit estimate or sweep it (the confirmed rate badly underestimates it,
-and in rehearsal it flagged no meters at all);
+and in rehearsal it made training unstable, with validation ROC-AUC below 0.5 in
+22% of epochs on average);
 labels are not yet time-windowed (a thief is marked for the whole window,
 including post-regularization periods); inspected-clean negatives are treated
 as unlabeled; unmetered loads (street lighting) inflate residuals. The real
@@ -300,11 +311,14 @@ needed (not wired yet). SSL needs only unlabeled series — run it first.
 
 ## Design-to-evidence summary
 
-| design claim | evidence in this repo |
+| design claim | evidence in this repo (5 seeds) |
 |---|---|
-| static features help (partly by simulator design) | ablation, 3 seeds: temporal 0.814 → +static 0.896 AUPR; 0.877 with label signal removed from age and alarms |
-| feeder attention and physics head | no measurable ranking gain at this scale: +graph 0.892, full 0.881 AUPR |
-| physics head grounds & ranks | residual↔stolen corr 0.94–0.96; stolen-energy estimates drive cost-aware ranking |
-| PU is the honest framing | prior sweep and rehearsal in `outputs/reference_cpu/report_numbers.txt`; the confirmed-rate prior flags nobody |
-| SSL pays off when labels are scarce | **not supported**: PU test AUPR 0.535 → 0.525 over 3 seeds |
-| combined augmentation | best ROC on all 3 seeds; no reliable gain on novel h7 (table above) |
+| static features help (partly by simulator design) | temporal 0.901 → +static 0.940 AUPR, 5/5 seeds; still 5/5 with age and alarms label-free |
+| feeder attention | not separable from noise: 0.948, higher on 3/5 seeds |
+| physics head | no discrimination gain (0.935, lower on 4/5); its value is the stolen-energy estimate: top 10% captures 0.80 of stolen kWh with cost-aware ranking |
+| conservation identity | residual↔stolen correlation 0.94–0.98 over five networks |
+| PU is the honest framing | the confirmed-rate prior makes training unstable; confirmed-only AUPR understates true AUPR ~3.5x (`outputs/gpu_run/results/`) |
+| deployment rehearsal | top 5% of each test ranking holds 76–93% thieves vs a 16% base rate, five defective exports |
+| SSL pays off when labels are scarce | not settled: PU AUPR 0.657 → 0.732, higher on 3/5 seeds |
+| combined augmentation | best AUPR/ROC on the unseen-attack test; cVAE helps the unseen h8 on 5/5 seeds |
+| advantage over a per-customer CNN | **not established**: CNN 0.950 vs full 0.935 under different splits |
